@@ -1,33 +1,59 @@
-enum Method { DELIVERY, PICKUP }
+enum Status { DELIVERY, PICKUP }
+
+class Item {
+  final int _itemId;
+  final String _name;
+  final double _price;
+
+  Item(this._itemId, this._name, this._price);
+
+  int get itemId => _itemId;
+  String get name => _name;
+  double get price => _price;
+
+  @override
+  String toString() => 'Item ID: $_itemId, \nName: $_name, \nPrice: \$$_price\n';
+
+}
 
 class Order {
-  final String _productName;
+  final int _orderId;
+  final String _customerName;
   final int _amount;
-  final double _price;
-  final List<Method> _methods;
+  final Item _items;
+  final Status _status;
 
-  String get getProductName => _productName;
-  int get getAmount => _amount;
-  List<Method> get getMethod => _methods;
-  double get getPrice => _price;
+  int get orderId => _orderId;
+  String get customerName => _customerName;
+  Item get items => _items;
+  int get amount => _amount;
+  Status get status => _status;
 
-  Order(this._productName, this._amount, this._price, this._methods);
+  Order(
+    this._orderId, 
+    this._customerName,
+    this._items, 
+    this._amount,
+    this._status
+  );
 
   double computeTotalAmount() {
-    double totalAmount = _amount * _price;
-    if(getMethod.contains(Method.DELIVERY)) {
-      totalAmount += 2;
+    double totalAmount = _amount * items._price;
+    if(_status == Status.DELIVERY) {
+      totalAmount += 2; // Delivery fee
     }
     return totalAmount;
   }
 
   @override
   String toString() {
-    return "Product Name: $getProductName \nAmount: $getAmount \nPrice per unit: \$$getPrice \nMethod: ${_methods.map((m) => m.name).join(", ")} \nTotal Price: \$${computeTotalAmount()}\n";
+    return "Order ID: $orderId \nCustomer: $customerName \nItem: ${items.name} \nAmount: $_amount \nStatus: ${_status.name} \nTotal Price: \$${computeTotalAmount()}\n";
   }
 }
 
 void main() {
-  Order myOrder = Order("Beef", 3, 5, [Method.DELIVERY]);
+  Item items = Item(1, "Laptop", 100);
+  Order myOrder = Order(1, "Navid", items, 1, Status.DELIVERY);
+  print(items);
   print(myOrder);
 }

@@ -1,6 +1,6 @@
 class MyDuration {
 
-  int _milliseconds;
+  final int _milliseconds;
 
   MyDuration(this._milliseconds);
 
