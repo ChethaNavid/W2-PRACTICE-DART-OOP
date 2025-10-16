@@ -12,33 +12,35 @@ class Item {
   double get price => _price;
 
   @override
-  String toString() => 'Item ID: $_itemId, \nName: $_name, \nPrice: \$$_price\n';
+  String toString() => 'Name: $_name, \nPrice: \$$_price\n';
 
 }
 
 class Order {
   final int _orderId;
   final String _customerName;
-  final int _amount;
-  final Item _items;
+  final List<int> _quatities;
+  final List<Item> _items;
   final Status _status;
 
   int get orderId => _orderId;
   String get customerName => _customerName;
-  Item get items => _items;
-  int get amount => _amount;
+  List<Item> get items => _items;
   Status get status => _status;
 
   Order(
     this._orderId, 
     this._customerName,
     this._items, 
-    this._amount,
+    this._quatities,
     this._status
   );
 
   double computeTotalAmount() {
-    double totalAmount = _amount * items._price;
+    double totalAmount = 0;
+    for(int i = 0; i < _items.length; i++) {
+      totalAmount += _quatities[i] * _items[i].price;
+    }
     if(_status == Status.DELIVERY) {
       totalAmount += 2; // Delivery fee
     }
@@ -47,13 +49,17 @@ class Order {
 
   @override
   String toString() {
-    return "Order ID: $orderId \nCustomer: $customerName \nItem: ${items.name} \nAmount: $_amount \nStatus: ${_status.name} \nTotal Price: \$${computeTotalAmount()}\n";
+    final itemDetails = List.generate(
+      _items.length,
+      (i) => '${_items[i].name} x${_quatities[i]} (\$${_items[i].price})',
+    ).join(', ');
+    return "Order ID: $orderId \nCustomer: $customerName \nItem: $itemDetails \nStatus: ${_status.name} \nTotal Price: \$${computeTotalAmount()}\n";
   }
 }
 
 void main() {
-  Item items = Item(1, "Laptop", 100);
-  Order myOrder = Order(1, "Navid", items, 1, Status.DELIVERY);
-  print(items);
+  Item laptop = Item(1, "Laptop", 100);
+  Item mouse = Item(2, "Mouse", 30);
+  Order myOrder = Order(1, "Navid", [laptop, mouse], [1, 2], Status.DELIVERY);
   print(myOrder);
 }
